@@ -1,0 +1,9 @@
+body[data-theme="aurora"] {
+  --bg: #090d17;
+  --panel: #111a29;
+  --panel2: #17243a;
+  --line: #2a3c55;
+  --lime: #6ce5d0;
+  --blue: #72a9ff;
+  --violet: #c17aff;
+}
