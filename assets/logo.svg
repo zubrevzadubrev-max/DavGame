@@ -1,1 +1,7 @@
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 64" role="img" aria-labelledby="t d">
+  <title id="t">DavGame</title><desc id="d">Логотип игровой платформы DavGame</desc>
+  <g><path fill="#c9f45d" d="M4 4h28c16 0 26 10 26 28S48 60 32 60H4V4Zm12 12v32h15c10 0 15-5 15-16s-5-16-15-16H16Z"/><path fill="#090b11" d="M26 23h27v10H37v7h9v-4h10v14c-6 4-12 6-20 6-4 0-8-1-11-2l5-10c2 1 5 2 7 2 4 0 7-1 9-3v-3H26V23Z"/><path fill="#fff" fill-opacity=".9" d="M4 4h12v12H4z"/></g>
+  <text x="74" y="42" fill="#f4f6fa" font-family="Manrope,system-ui,sans-serif" font-weight="800" font-size="31" letter-spacing="-1.5">Dav</text>
+  <text x="128" y="42" fill="#c9f45d" font-family="Manrope,system-ui,sans-serif" font-weight="800" font-size="31" letter-spacing="-1.5">Game</text>
+  <path stroke="#c9f45d" stroke-width="2" d="M75 51h151"/><path fill="#c9f45d" d="m232 47 8 5-8 5z"/>
+</svg>
