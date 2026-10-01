@@ -6,18 +6,19 @@
   <meta name="theme-color" content="#0a0c12">
   <meta name="description" content="DavGame — шахматы, шашки и морской бой в одной игровой платформе.">
   <title>DavGame — Играй. Думай. Побеждай.</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/responsive.css">
   <link rel="stylesheet" href="./css/themes.css">
+  <link rel="stylesheet" href="./css/polish.css">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
   <div id="splash" class="splash">
-    <div class="splash-mark"><span>DG</span></div>
-    <div class="brand brand--huge">Dav<span>Game</span></div>
+    <img class="splash-logo" src="./assets/logo.svg" alt="DavGame">
     <p>PLAY <i></i> THINK <i></i> WIN</p>
     <div class="loader"><b></b></div>
   </div>
@@ -28,6 +29,7 @@
       <div class="orbit orbit-a">♞</div><div class="orbit orbit-b">●</div><div class="orbit orbit-c">⌖</div>
     </div>
     <form id="profile-form" class="profile-form">
+      <img class="onboarding-logo" src="./assets/logo.svg" alt="DavGame">
       <span class="eyebrow">Первый запуск</span>
       <h1 id="welcome-title">Создай игрока</h1>
       <p class="muted">Никаких регистраций. Профиль и прогресс останутся на этом устройстве.</p>
@@ -40,7 +42,7 @@
 
   <div id="app" class="app hidden">
     <aside class="sidebar">
-      <a href="#home" class="brand" aria-label="DavGame">Dav<span>Game</span></a>
+      <a href="#home" class="brand brand-logo" aria-label="DavGame"><img src="./assets/logo.svg" alt="DavGame"><img class="brand-logo__mark" src="./assets/logo-mark.svg" alt=""></a>
       <nav id="nav">
         <a href="#home" data-route="home"><span>⌂</span>Главная</a>
         <a href="#games" data-route="games"><span>◆</span>Игры</a>
@@ -57,7 +59,7 @@
         <button id="profile-chip" class="profile-chip"><span class="mini-avatar"></span><span><b></b><small>Игрок</small></span></button>
       </header>
       <div id="view" class="view" aria-live="polite"></div>
-      <footer><span class="brand brand--small">Dav<span>Game</span></span><p>Проект создал: ученик 11 «А» класса Русинов Давид</p><small>© DavGame — учебный проект</small></footer>
+      <footer><img class="footer-logo" src="./assets/logo.svg" alt="DavGame"><p>Проект создал: ученик 11 «А» класса Русинов Давид</p><small>© DavGame — учебный проект</small></footer>
     </main>
     <nav class="bottom-nav">
       <a href="#home" data-route="home">⌂<small>Главная</small></a><a href="#games" data-route="games">◆<small>Игры</small></a><a href="#stats" data-route="stats">⌁<small>Статы</small></a><a href="#profile" data-route="profile">◉<small>Профиль</small></a>
