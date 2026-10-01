@@ -32,20 +32,29 @@ function randomCode(){return `DAV-${Math.floor(1000+Math.random()*9000)}`}
 
 export async function createRoom(game,profile,gameState){
   const f=await getFirebase(),uid=f.auth.currentUser.uid;let code='';
-  for(let attempt=0;attempt<25;attempt++){const candidate=randomCode(),snap=await f.get(f.ref(f.db,`rooms/${candidate}`));if(!snap.exists()){code=candidate;break}}
+  for(let attempt=0;attempt<25;attempt++){
+    const candidate=randomCode(),roomRef=f.ref(f.db,`rooms/${candidate}`),room={game,status:'waiting',createdAt:Date.now(),updatedAt:Date.now(),host:playerRecord(profile,uid),guest:null,turn:'host',gameState,result:null,drawOffer:null,rematch:{host:false,guest:false},presence:{[uid]:true}};
+    const tx=await f.runTransaction(roomRef,current=>current?undefined:room,{applyLocally:false});
+    if(tx.committed){code=candidate;break}
+  }
   if(!code)throw new Error('Не удалось подобрать свободный код. Попробуйте ещё раз.');
-  const room={game,status:'waiting',createdAt:Date.now(),updatedAt:Date.now(),host:playerRecord(profile,uid),guest:null,turn:'host',gameState,result:null,drawOffer:null,rematch:{host:false,guest:false},presence:{[uid]:true}};
-  await f.set(f.ref(f.db,`rooms/${code}`),room);const presence=f.ref(f.db,`rooms/${code}/presence/${uid}`);await f.onDisconnect(presence).remove();return {code,role:'host',uid};
+  const presence=f.ref(f.db,`rooms/${code}/presence/${uid}`);await f.onDisconnect(presence).remove();return {code,role:'host',uid};
 }
 
 export async function joinRoom(rawCode,game,profile){
   const code=normalizeRoomCode(rawCode);if(!code)throw new Error('Введите код в формате DAV-1234.');
   const f=await getFirebase(),uid=f.auth.currentUser.uid,roomRef=f.ref(f.db,`rooms/${code}`),before=await f.get(roomRef);
   if(!before.exists())throw new Error('Комната не найдена. Проверьте код.');
-  const current=before.val();if(current.game!==game)throw new Error('В этой комнате выбрана другая игра.');if(['finished','abandoned','closed'].includes(current.status))throw new Error('Матч в этой комнате уже завершён.');if(current.guest&&current.guest.id!==uid)throw new Error('Комната уже занята.');
-  const tx=await f.runTransaction(roomRef,room=>{if(!room||room.game!==game||['finished','abandoned','closed'].includes(room.status)||(room.guest&&room.guest.id!==uid))return;room.guest=playerRecord(profile,uid);room.status='playing';room.updatedAt=Date.now();room.presence??={};room.presence[uid]=true;return room},{applyLocally:false});
-  if(!tx.committed)throw new Error('Не удалось подключиться: состояние комнаты изменилось.');
-  const room=tx.snapshot.val(),role=room.host.id===uid?'host':'guest',presence=f.ref(f.db,`rooms/${code}/presence/${uid}`);await f.set(presence,true);await f.onDisconnect(presence).remove();return {code,role,uid};
+  const current=before.val();if(current.game!==game)throw new Error('В этой комнате выбрана другая игра.');if(['finished','abandoned','closed'].includes(current.status))throw new Error('Матч в этой комнате уже завершён.');
+  const existingRole=current.host?.id===uid?'host':current.guest?.id===uid?'guest':null;
+  if(!existingRole&&current.guest)throw new Error('Комната уже занята.');
+  if(!existingRole){
+    const guestRef=f.ref(f.db,`rooms/${code}/guest`),guestTx=await f.runTransaction(guestRef,guest=>guest?undefined:playerRecord(profile,uid),{applyLocally:false});
+    if(!guestTx.committed)throw new Error('Комната уже занята.');
+  }
+  const role=existingRole||'guest',presence=f.ref(f.db,`rooms/${code}/presence/${uid}`);
+  await f.update(roomRef,{status:current.guest||role==='guest'?'playing':current.status,updatedAt:Date.now(),[`presence/${uid}`]:true});
+  await f.onDisconnect(presence).remove();return {code,role,uid};
 }
 
 export async function watchRoom(code,onRoom,onError){const f=await getFirebase(),roomRef=f.ref(f.db,`rooms/${code}`),handler=snap=>onRoom(snap.exists()?snap.val():null);f.onValue(roomRef,handler,onError);return()=>f.off(roomRef,'value',handler)}

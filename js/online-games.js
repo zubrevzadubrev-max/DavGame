@@ -1,5 +1,5 @@
 import {firebaseReady} from './firebase-config.js';
-import {createRoom,joinRoom,watchRoom,commitGameState,updateRoomAction,leaveRoom,markDisconnected} from './rooms.js';
+import {createRoom,joinRoom,watchRoom,commitGameState,updateRoomAction,leaveRoom,markDisconnected} from './rooms.js?v=4';
 import {toast,modal} from './ui.js';
 
 const chessGlyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
