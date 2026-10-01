@@ -1,6 +1,6 @@
-import {record} from './storage.js?v=5';
-import {toast,formatTime,modal} from './ui.js?v=5';
-import {createChessState,chessLegalMoves,chessAllMoves,applyChessMove} from './rules.js?v=5';
+import {record} from './storage.js?v=6';
+import {toast,formatTime,modal} from './ui.js?v=6';
+import {createChessState,chessLegalMoves,chessAllMoves,applyChessMove} from './rules.js?v=6';
 
 const glyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
 const value={p:1,n:3,b:3,r:5,q:9,k:100};
@@ -19,7 +19,7 @@ export function mountChess(root,appState,level='medium'){
       const square=document.createElement('button'),piece=position.board[r][c];square.className=`square ${(r+c)%2?'dark':'light'}`;square.type='button';square.setAttribute('aria-label',`${String.fromCharCode(97+c)}${8-r}`);
       if(selected?.[0]===r&&selected?.[1]===c)square.classList.add('selected');if(legal.some(x=>same(x,[r,c])))square.classList.add(piece?'capture':'legal');
       if(position.lastMove&&(same(position.lastMove.from,[r,c])||same(position.lastMove.to,[r,c])))square.classList.add('last-move');if(checkKing&&same(checkKing,[r,c]))square.classList.add('in-check');
-      if(piece)square.innerHTML=`<span class="chess-piece">${glyph[piece]}</span>`;square.onclick=()=>click(r,c);board.append(square);
+      if(piece)square.innerHTML=`<span class="chess-piece ${piece[0]==='w'?'piece-white':'piece-black'}">${glyph[piece]}</span>`;square.onclick=()=>click(r,c);board.append(square);
     }
     status.textContent=over?'Партия завершена':position.check?(position.turn==='w'?'Шах вашему королю':'Бот под шахом'):position.turn==='w'?'Ваш ход':'Бот думает…';
     list.innerHTML=history.length?history.map((m,i)=>`${i+1}. ${m}`).join('<br>'):'Ходы появятся здесь.';root.querySelector('[data-you]').classList.toggle('active',position.turn==='w');root.querySelector('[data-bot]').classList.toggle('active',position.turn==='b');

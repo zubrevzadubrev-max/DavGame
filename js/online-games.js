@@ -1,7 +1,7 @@
 import {firebaseReady} from './firebase-config.js';
-import {createRoom,joinRoom,watchRoom,commitGameState,updateRoomAction,leaveRoom,markDisconnected} from './rooms.js?v=5';
-import {toast,modal} from './ui.js?v=5';
-import {createChessState,chessLegalMoves,applyChessMove,createCheckersState,checkersLegalMoves,applyCheckersMove} from './rules.js?v=5';
+import {createRoom,joinRoom,watchRoom,commitGameState,updateRoomAction,leaveRoom,markDisconnected} from './rooms.js?v=6';
+import {toast,modal} from './ui.js?v=6';
+import {createChessState,chessLegalMoves,applyChessMove,createCheckersState,checkersLegalMoves,applyCheckersMove} from './rules.js?v=6';
 
 const chessGlyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
 const names={chess:'Шахматы',checkers:'Шашки'};
@@ -29,7 +29,7 @@ export function mountOnline(root,game,appState){
   function renderChess(stage,myTurn){
     const state=room.gameState,board=state.board,own=identity.role==='host'?'w':'b',moves=selected?chessLegalMoves(state,selected[0],selected[1]):[],checkKing=state.check?findKing(board,state.turn):null;
     stage.innerHTML=`<div class="online-board-wrap"><div class="board chess-board online-board ${identity.role==='guest'?'flipped':''}"></div><aside class="online-aside"><span class="eyebrow">Последний ход</span><strong>${formatMove(state.lastMove)||'—'}</strong><p>${state.check?'Король под шахом.':'Позиция синхронизирована.'}</p><small>Ревизия ${state.revision}</small></aside></div>`;
-    const el=stage.querySelector('.board');for(let r=0;r<8;r++)for(let c=0;c<8;c++){const square=document.createElement('button'),piece=board[r][c];square.type='button';square.className=`square ${(r+c)%2?'dark':'light'}`;if(same(selected,[r,c]))square.classList.add('selected');if(moves.some(x=>same(x,[r,c])))square.classList.add(piece?'capture':'legal');if(state.lastMove&&(same(state.lastMove.from,[r,c])||same(state.lastMove.to,[r,c])))square.classList.add('last-move');if(same(checkKing,[r,c]))square.classList.add('in-check');if(piece)square.innerHTML=`<span class="chess-piece">${chessGlyph[piece]}</span>`;square.disabled=!myTurn;square.onclick=()=>{if(selected&&moves.some(x=>same(x,[r,c])))submitChess(selected,[r,c]);else if(piece?.[0]===own){selected=[r,c];renderRoom()}};el.append(square)}
+    const el=stage.querySelector('.board');for(let r=0;r<8;r++)for(let c=0;c<8;c++){const square=document.createElement('button'),piece=board[r][c];square.type='button';square.className=`square ${(r+c)%2?'dark':'light'}`;if(same(selected,[r,c]))square.classList.add('selected');if(moves.some(x=>same(x,[r,c])))square.classList.add(piece?'capture':'legal');if(state.lastMove&&(same(state.lastMove.from,[r,c])||same(state.lastMove.to,[r,c])))square.classList.add('last-move');if(same(checkKing,[r,c]))square.classList.add('in-check');if(piece)square.innerHTML=`<span class="chess-piece ${piece[0]==='w'?'piece-white':'piece-black'}">${chessGlyph[piece]}</span>`;square.disabled=!myTurn;square.onclick=()=>{if(selected&&moves.some(x=>same(x,[r,c])))submitChess(selected,[r,c]);else if(piece?.[0]===own){selected=[r,c];renderRoom()}};el.append(square)}
   }
   async function submitChess(from,to){if(busy)return;const old=room.gameState;if((identity.role==='host'?'w':'b')!==old.turn)return;const next=applyChessMove(old,from,to);if(!next)return;const result=next.result?{winner:next.result.winner==='w'?'host':next.result.winner==='b'?'guest':null,reason:next.result.reason}:null;busy=true;selected=null;try{await commitGameState(identity.code,identity,old.revision,next,other(identity.role),result)}catch(err){showError(err)}finally{busy=false}}
   function renderCheckers(stage,myTurn){
