@@ -39,7 +39,7 @@ DavGame — игровая веб-платформа с шахматами, ша
 7. Скопируйте значения `apiKey`, `authDomain`, `databaseURL`, `projectId`, `storageBucket`, `messagingSenderId`, `appId` в объект `firebaseConfig` внутри `js/firebase-config.js`.
 8. В **Authentication → Settings → Authorized domains** добавьте домен GitHub Pages, например `username.github.io`. `localhost` можно оставить для локальной проверки.
 
-Проект использует браузерные ES-модули Firebase SDK 10.14.1: `firebase-app`, `firebase-auth` и `firebase-database`. Node.js backend не нужен. Без конфигурации Firebase локальные игры, задания, профиль и статистика продолжают работать.
+Проект использует браузерные ES-модули Firebase SDK 12.19.0: `firebase-app`, `firebase-auth` и `firebase-database`. Node.js backend не нужен. Без доступной базы Firebase локальные игры, задания, профиль и статистика продолжают работать.
 
 ### Правила безопасности
 
