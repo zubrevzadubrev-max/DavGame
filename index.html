@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c12">
+  <meta name="description" content="DavGame — шахматы, шашки и морской бой в одной игровой платформе.">
+  <title>DavGame — Играй. Думай. Побеждай.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  <link rel="stylesheet" href="./css/themes.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div id="splash" class="splash">
+    <div class="splash-mark"><span>DG</span></div>
+    <div class="brand brand--huge">Dav<span>Game</span></div>
+    <p>PLAY <i></i> THINK <i></i> WIN</p>
+    <div class="loader"><b></b></div>
+  </div>
+
+  <section id="onboarding" class="onboarding hidden" aria-labelledby="welcome-title">
+    <div class="onboarding-art" aria-hidden="true">
+      <div class="art-copy"><span>01 / PLAYER ID</span><b>Твоя игра.<br>Твои правила.</b><small>Три классические стратегии в новом ритме.</small></div>
+      <div class="orbit orbit-a">♞</div><div class="orbit orbit-b">●</div><div class="orbit orbit-c">⌖</div>
+    </div>
+    <form id="profile-form" class="profile-form">
+      <span class="eyebrow">Первый запуск</span>
+      <h1 id="welcome-title">Создай игрока</h1>
+      <p class="muted">Никаких регистраций. Профиль и прогресс останутся на этом устройстве.</p>
+      <label>Никнейм <input id="nickname" maxlength="16" required placeholder="Например, Strateg" autocomplete="nickname"></label>
+      <label>Имя <small>необязательно</small><input id="realname" maxlength="24" placeholder="Как к тебе обращаться?"></label>
+      <fieldset><legend>Выбери аватар</legend><div id="avatar-picker" class="avatar-picker"></div></fieldset>
+      <button class="btn btn-primary btn-wide" type="submit">Войти в DavGame <span>→</span></button>
+    </form>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <a href="#home" class="brand" aria-label="DavGame">Dav<span>Game</span></a>
+      <nav id="nav">
+        <a href="#home" data-route="home"><span>⌂</span>Главная</a>
+        <a href="#games" data-route="games"><span>◆</span>Игры</a>
+        <a href="#profile" data-route="profile"><span>◉</span>Профиль</a>
+        <a href="#stats" data-route="stats"><span>⌁</span>Статистика</a>
+        <a href="#settings" data-route="settings"><span>⚙</span>Настройки</a>
+      </nav>
+      <div class="sidebar-foot"><small>PLAY · THINK · WIN</small><b>DAV / 2026</b></div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <button id="mobile-menu" class="icon-btn" aria-label="Меню">☰</button>
+        <div class="status-pill"><i></i><span>Локальный режим</span></div>
+        <button id="profile-chip" class="profile-chip"><span class="mini-avatar"></span><span><b></b><small>Игрок</small></span></button>
+      </header>
+      <div id="view" class="view" aria-live="polite"></div>
+      <footer><span class="brand brand--small">Dav<span>Game</span></span><p>Проект создал: ученик 11 «А» класса Русинов Давид</p><small>© DavGame — учебный проект</small></footer>
+    </main>
+    <nav class="bottom-nav">
+      <a href="#home" data-route="home">⌂<small>Главная</small></a><a href="#games" data-route="games">◆<small>Игры</small></a><a href="#stats" data-route="stats">⌁<small>Статы</small></a><a href="#profile" data-route="profile">◉<small>Профиль</small></a>
+    </nav>
+  </div>
+
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-root" aria-live="assertive"></div>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
