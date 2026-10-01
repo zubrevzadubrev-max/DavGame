@@ -4,7 +4,7 @@
     ".write": false,
     "rooms": {
       "$roomId": {
-        ".read": "auth != null && (data.child('status').val() === 'waiting' || data.child('host/id').val() === auth.uid || data.child('guest/id').val() === auth.uid)",
+        ".read": "auth != null",
         ".write": "auth != null && ((!data.exists() && newData.child('host/id').val() === auth.uid) || (data.exists() && (data.child('host/id').val() === auth.uid || data.child('guest/id').val() === auth.uid || (!data.child('guest').exists() && data.child('status').val() === 'waiting' && newData.child('guest/id').val() === auth.uid))))",
         ".validate": "!newData.exists() || (newData.hasChildren(['game','status','createdAt','updatedAt','host','turn','gameState']) && (newData.child('game').val() === 'chess' || newData.child('game').val() === 'checkers' || newData.child('game').val() === 'battleship') && (newData.child('status').val() === 'waiting' || newData.child('status').val() === 'playing' || newData.child('status').val() === 'finished' || newData.child('status').val() === 'abandoned' || newData.child('status').val() === 'closed') && (newData.child('turn').val() === 'host' || newData.child('turn').val() === 'guest'))",
         "host": {
