@@ -69,7 +69,7 @@ export function mountOnline(root,game,appState){
   function confirmLeave(){modal({title:'Выйти из комнаты?',text:'Матч будет завершён, а соперник увидит ваш выход.',danger:true,confirm:'Выйти',onConfirm:async()=>{await leaveRoom(identity.code,identity).catch(()=>{});unsubscribe?.();identity=null;room=null;showLobby()}})}
   function watchPresence(){clearTimeout(disconnectTimer);if(room.status!=='playing')return;const missing=other(identity.role),player=room[missing];if(player&&!room.presence?.[player.id])disconnectTimer=setTimeout(()=>markDisconnected(identity.code,identity,missing).catch(()=>{}),6000)}
   function battleshipWarning(){return game==='battleship'?'<p class="privacy-note">Учебное ограничение: координаты флота скрыты интерфейсом, но доступны авторизованным участникам в данных комнаты. Для турнирной защиты нужен доверенный сервер проверки ходов.</p>':''}
-  function showError(err){toast('Не удалось выполнить действие',err?.message||'Проверьте соединение и настройки Firebase.')}
+  function showError(err){const raw=err?.message||'',permission=/permission.?denied/i.test(raw)||err?.code==='PERMISSION_DENIED'||err?.code==='permission-denied';toast('Не удалось выполнить действие',permission?'Firebase отклонил запрос. Опубликуйте актуальный firebase.rules.json во вкладке Rules.':raw||'Проверьте соединение и настройки Firebase.')}
   function setBusy(button,value,label){busy=value;button.disabled=value;button.textContent=label}
 }
 
