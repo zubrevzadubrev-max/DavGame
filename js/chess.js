@@ -1,16 +1,44 @@
-import {record} from './storage.js';import {toast,formatTime,modal} from './ui.js';
+import {record} from './storage.js?v=5';
+import {toast,formatTime,modal} from './ui.js?v=5';
+import {createChessState,chessLegalMoves,chessAllMoves,applyChessMove} from './rules.js?v=5';
+
 const glyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
-const value={p:1,n:3,b:3,r:5,q:9,k:99};
-export function mountChess(root,state,level='medium'){
- let b=initial(),turn='w',selected=null,legal=[],moves=[],seconds=0,over=false;const depths={easy:0,medium:1,hard:2,expert:2};
- root.innerHTML=layout();const board=root.querySelector('.board'),status=root.querySelector('[data-status]'),list=root.querySelector('.move-list'),timer=root.querySelector('.timer');render();const tick=setInterval(()=>{if(!over){seconds++;timer.textContent=formatTime(seconds)}},1000);root._cleanup=()=>clearInterval(tick);
- root.querySelector('[data-resign]').onclick=()=>modal({title:'Сдаться?',text:'Партия будет записана как поражение.',danger:true,confirm:'Сдаться',onConfirm:()=>finish('Поражение')});root.querySelector('[data-restart]').onclick=()=>{b=initial();turn='w';selected=null;legal=[];moves=[];seconds=0;over=false;render()};
- function layout(){return `<div class="game-layout"><div class="game-panel"><div class="board chess-board"></div></div><div class="game-info"><div class="game-panel"><div class="player-row" data-bot><div class="face">🤖</div><span><b>BOT / ${level.toUpperCase()}</b><small>Чёрные</small></span></div><div class="timer">00:00</div><div class="player-row active" data-you><div class="face">${state.profile.avatar}</div><span><b>${state.profile.nickname}</b><small>Белые</small></span></div></div><div class="game-panel"><h3 class="panel-title" data-status>Ваш ход</h3><div class="move-list"></div><button class="btn btn-secondary btn-wide" data-restart>Новая партия</button><button class="btn btn-ghost btn-wide" style="margin-top:8px" data-resign>Сдаться</button></div></div>`}
- function initial(){let x=Array.from({length:8},()=>Array(8).fill(null));const back=['r','n','b','q','k','b','n','r'];for(let c=0;c<8;c++){x[0][c]='b'+back[c];x[1][c]='bp';x[6][c]='wp';x[7][c]='w'+back[c]}return x}
- function render(){board.innerHTML='';for(let r=0;r<8;r++)for(let c=0;c<8;c++){let s=document.createElement('button');s.className=`square ${(r+c)%2?'dark':'light'}`;s.dataset.pos=`${r},${c}`;if(selected&&selected[0]===r&&selected[1]===c)s.classList.add('selected');let hit=legal.find(x=>x[0]===r&&x[1]===c);if(hit)s.classList.add(b[r][c]?'capture':'legal');s.textContent=b[r][c]?glyph[b[r][c]]:'';s.onclick=()=>click(r,c);board.append(s)}status.textContent=over?'Партия завершена':turn==='w'?'Ваш ход':'Бот думает…';list.innerHTML=moves.map((m,i)=>`${i+1}. ${m}`).join('<br>')||'Ходы появятся здесь.';root.querySelector('[data-you]').classList.toggle('active',turn==='w');root.querySelector('[data-bot]').classList.toggle('active',turn==='b')}
- function click(r,c){if(over||turn!=='w')return;const p=b[r][c];if(selected&&legal.some(x=>x[0]===r&&x[1]===c)){move(selected,[r,c]);selected=null;legal=[];render();if(!over)setTimeout(bot,350);return}if(p?.[0]==='w'){selected=[r,c];legal=getMoves(b,r,c);render()}else{selected=null;legal=[];render()}}
- function move(a,z){const moving=b[a[0]][a[1]],captured=b[z[0]][z[1]];b[z[0]][z[1]]=moving;b[a[0]][a[1]]=null;if(moving[1]==='p'&&(z[0]===0||z[0]===7))b[z[0]][z[1]]=moving[0]+'q';moves.push(`${glyph[moving]} ${String.fromCharCode(97+a[1])}${8-a[0]}–${String.fromCharCode(97+z[1])}${8-z[0]}`);if(captured?.[1]==='k')finish(moving[0]==='w'?'Победа':'Поражение');turn=turn==='w'?'b':'w'}
- function bot(){if(over)return;let all=[];for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(b[r][c]?.[0]==='b')for(const z of getMoves(b,r,c)){const capture=b[z[0]][z[1]]?value[b[z[0]][z[1]][1]]:0,center=3.5-(Math.abs(3.5-z[0])+Math.abs(3.5-z[1]))/2;all.push({a:[r,c],z,score:level==='easy'?Math.random():capture*4+center*(level==='expert'?1:.2)+Math.random()*(level==='medium'?3:1)})}if(!all.length)return finish('Победа');all.sort((a,z)=>z.score-a.score);move(all[0].a,all[0].z);render()}
- function getMoves(x,r,c){const p=x[r][c];if(!p)return[];const col=p[0],t=p[1],out=[],add=(rr,cc)=>{if(rr<0||cc<0||rr>7||cc>7)return false;if(!x[rr][cc]){out.push([rr,cc]);return true}if(x[rr][cc][0]!==col)out.push([rr,cc]);return false},ray=(dr,dc)=>{let rr=r+dr,cc=c+dc;while(add(rr,cc)){rr+=dr;cc+=dc}};if(t==='p'){let d=col==='w'?-1:1;if(!x[r+d]?.[c]){out.push([r+d,c]);let start=col==='w'?6:1;if(r===start&&!x[r+2*d][c])out.push([r+2*d,c])}for(const dc of[-1,1])if(x[r+d]?.[c+dc]&&x[r+d][c+dc][0]!==col)out.push([r+d,c+dc])}if(t==='n')for(const[d,e]of[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]])add(r+d,c+e);if('brq'.includes(t)){if(t!=='b'){ray(1,0);ray(-1,0);ray(0,1);ray(0,-1)}if(t!=='r'){ray(1,1);ray(1,-1);ray(-1,1);ray(-1,-1)}}if(t==='k')for(let d=-1;d<=1;d++)for(let e=-1;e<=1;e++)if(d||e)add(r+d,c+e);return out}
- function finish(result){if(over)return;over=true;record(state,'chess',result);render();toast(result,result==='Победа'?'Отличная партия! +100 очков':'Попробуйте другую стратегию.')}
+const value={p:1,n:3,b:3,r:5,q:9,k:100};
+
+export function mountChess(root,appState,level='medium'){
+  let position=createChessState(),selected=null,legal=[],history=[],seconds=0,over=false;
+  root.innerHTML=layout();const board=root.querySelector('.board'),status=root.querySelector('[data-status]'),list=root.querySelector('.move-list'),timer=root.querySelector('.timer');render();
+  const tick=setInterval(()=>{if(!over){seconds++;timer.textContent=formatTime(seconds)}},1000);root._cleanup=()=>clearInterval(tick);
+  root.querySelector('[data-resign]').onclick=()=>modal({title:'Сдаться?',text:'Партия будет записана как поражение.',danger:true,confirm:'Сдаться',onConfirm:()=>finish('Поражение')});
+  root.querySelector('[data-restart]').onclick=()=>{position=createChessState();selected=null;legal=[];history=[];seconds=0;over=false;render()};
+
+  function layout(){return `<div class="game-layout"><div class="game-panel board-panel"><div class="board chess-board" aria-label="Шахматная доска"></div></div><div class="game-info"><div class="game-panel"><div class="player-row" data-bot><div class="face">🤖</div><span><b>BOT / ${level.toUpperCase()}</b><small>Чёрные</small></span></div><div class="timer">00:00</div><div class="player-row active" data-you><div class="face">${appState.profile.avatar}</div><span><b>${appState.profile.nickname}</b><small>Белые</small></span></div></div><div class="game-panel"><h3 class="panel-title" data-status>Ваш ход</h3><div class="move-list"></div><button class="btn btn-secondary btn-wide" data-restart>Новая партия</button><button class="btn btn-ghost btn-wide" style="margin-top:8px" data-resign>Сдаться</button></div></div>`}
+  function render(){
+    board.innerHTML='';const checkKing=position.check?findKing(position.board,position.turn):null;
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const square=document.createElement('button'),piece=position.board[r][c];square.className=`square ${(r+c)%2?'dark':'light'}`;square.type='button';square.setAttribute('aria-label',`${String.fromCharCode(97+c)}${8-r}`);
+      if(selected?.[0]===r&&selected?.[1]===c)square.classList.add('selected');if(legal.some(x=>same(x,[r,c])))square.classList.add(piece?'capture':'legal');
+      if(position.lastMove&&(same(position.lastMove.from,[r,c])||same(position.lastMove.to,[r,c])))square.classList.add('last-move');if(checkKing&&same(checkKing,[r,c]))square.classList.add('in-check');
+      if(piece)square.innerHTML=`<span class="chess-piece">${glyph[piece]}</span>`;square.onclick=()=>click(r,c);board.append(square);
+    }
+    status.textContent=over?'Партия завершена':position.check?(position.turn==='w'?'Шах вашему королю':'Бот под шахом'):position.turn==='w'?'Ваш ход':'Бот думает…';
+    list.innerHTML=history.length?history.map((m,i)=>`${i+1}. ${m}`).join('<br>'):'Ходы появятся здесь.';root.querySelector('[data-you]').classList.toggle('active',position.turn==='w');root.querySelector('[data-bot]').classList.toggle('active',position.turn==='b');
+  }
+  function click(r,c){
+    if(over||position.turn!=='w')return;const piece=position.board[r][c];
+    if(selected&&legal.some(x=>same(x,[r,c]))){play(selected,[r,c],false);return}
+    if(piece?.[0]==='w'){selected=[r,c];legal=chessLegalMoves(position,r,c)}else{selected=null;legal=[]}render();
+  }
+  function play(from,to,botMove){
+    const moving=position.board[from[0]][from[1]],next=applyChessMove(position,from,to);if(!next)return;position=next;history.push(`${glyph[moving]} ${coord(from)}–${coord(to)}`);selected=null;legal=[];render();
+    if(position.result)return finish(position.result.winner==='w'?'Победа':position.result.winner===null?'Ничья':'Поражение');if(!botMove)setTimeout(bot,320);
+  }
+  function bot(){
+    if(over||position.turn!=='b')return;const moves=chessAllMoves(position,'b');if(!moves.length)return finish(position.check?'Победа':'Ничья');
+    const ranked=moves.map(move=>{const target=position.board[move.to[0]][move.to[1]],capture=target?value[target[1]]:0,center=3.5-(Math.abs(3.5-move.to[0])+Math.abs(3.5-move.to[1]))/2;return{...move,score:level==='easy'?Math.random():capture*5+center*(level==='expert'?1:.25)+Math.random()*(level==='medium'?3:1)}}).sort((a,b)=>b.score-a.score);play(ranked[0].from,ranked[0].to,true);
+  }
+  function finish(result){if(over)return;over=true;record(appState,'chess',result);render();toast(result,result==='Победа'?'Отличная партия! +100 очков':result==='Ничья'?'На доске пат.':'Попробуйте другую стратегию.')}
 }
+
+function findKing(board,color){for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(board[r][c]===color+'k')return[r,c];return null}
+function coord(cell){return `${String.fromCharCode(97+cell[1])}${8-cell[0]}`}function same(a,b){return a?.[0]===b?.[0]&&a?.[1]===b?.[1]}
