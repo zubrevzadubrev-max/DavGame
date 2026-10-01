@@ -1,6 +1,19 @@
-// Необязательная конфигурация онлайн-комнат.
-// 1. Создайте бесплатный проект на https://console.firebase.google.com
-// 2. Включите Realtime Database и вставьте параметры веб-приложения ниже.
-// Локальные игры работают и без Firebase.
-export const firebaseConfig={apiKey:'',authDomain:'',databaseURL:'',projectId:'',appId:''};
-export const firebaseReady=Boolean(firebaseConfig.apiKey&&firebaseConfig.databaseURL);
+/**
+ * Вставьте сюда объект firebaseConfig из Firebase Console:
+ * Project settings → General → Your apps → Web app → SDK setup and configuration.
+ * Не публикуйте административные ключи. Обычный Web API key Firebase допустимо
+ * хранить в клиенте — безопасность обеспечивается Authentication и Database Rules.
+ */
+export const firebaseConfig = {
+  apiKey: '',
+  authDomain: '',
+  databaseURL: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: ''
+};
+
+export const FIREBASE_SDK_VERSION = '10.14.1';
+export const firebaseReady = ['apiKey','authDomain','databaseURL','projectId','appId']
+  .every(key => Boolean(firebaseConfig[key] && !firebaseConfig[key].includes('...')));
