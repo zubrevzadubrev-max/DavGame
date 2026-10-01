@@ -1,6 +1,6 @@
 const KEY='davgame-state-v1';
-export const defaults={profile:null,settings:{sound:false,animations:true,theme:'dark'},stats:{played:0,wins:0,losses:0,draws:0,chess:0,checkers:0,points:0},history:[],tasks:{}};
-export function load(){try{const stored=JSON.parse(localStorage.getItem(KEY)||'{}'),state={...structuredClone(defaults),...stored,settings:{...defaults.settings,...stored.settings},stats:{...defaults.stats,...stored.stats},tasks:{...stored.tasks}};delete state.stats.battleship;delete state.tasks.battleship;state.history=(state.history||[]).filter(item=>item.game!=='Морской бой');return state}catch{return structuredClone(defaults)}}
+export const defaults={profile:null,settings:{sound:false,animations:true,theme:'dark'},stats:{played:0,wins:0,losses:0,draws:0,chess:0,checkers:0,points:0},history:[],tasks:{},learning:{}};
+export function load(){try{const stored=JSON.parse(localStorage.getItem(KEY)||'{}'),state={...structuredClone(defaults),...stored,settings:{...defaults.settings,...stored.settings},stats:{...defaults.stats,...stored.stats},tasks:{...stored.tasks},learning:{...stored.learning}};delete state.stats.battleship;delete state.tasks.battleship;state.history=(state.history||[]).filter(item=>item.game!=='Морской бой');return state}catch{return structuredClone(defaults)}}
 export function save(state){localStorage.setItem(KEY,JSON.stringify(state))}
 export function record(state,game,result,mode='Бот'){
  state.stats.played++; state.stats[result==='Победа'?'wins':result==='Поражение'?'losses':'draws']++;

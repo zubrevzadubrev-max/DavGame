@@ -1,6 +1,6 @@
-import {record} from './storage.js?v=6';
-import {toast,formatTime,modal} from './ui.js?v=6';
-import {createCheckersState,checkersLegalMoves,checkersAllMoves,applyCheckersMove} from './rules.js?v=6';
+import {record} from './storage.js?v=7';
+import {toast,formatTime,modal} from './ui.js?v=7';
+import {createCheckersState,checkersLegalMoves,checkersAllMoves,applyCheckersMove} from './rules.js?v=7';
 
 export function mountCheckers(root,appState,level='medium'){
   let position=createCheckersState(),selected=null,legal=[],seconds=0,over=false;

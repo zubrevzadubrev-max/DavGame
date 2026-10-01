@@ -127,21 +127,6 @@ body:before{opacity:.2;background:linear-gradient(90deg,#fff018 1px,transparent 
 .history{background:#fff;color:var(--ink);border-color:#c7c9c1}
 .history-row{border-color:#d8dad3}
 .empty{background:#fafaf6;border-color:#b8bbb3;color:#626a73;border-radius:0}
-.online-grid{max-width:none;grid-template-columns:1.1fr .9fr;gap:12px}
-.room-card{min-height:420px;border-radius:0;border:1px solid #c3c6be}
-.room-card--create{background:#14181e}
-.room-card:not(.room-card--create){background:#fff;color:var(--ink)}
-.room-card__mark{border-radius:0}
-.room-code-input{background:#f4f4ef;color:#16191d}
-.online-security,.privacy-note{color:#606873}
-.room-bar{border-radius:0;background:#12161c}
-.versus{background:#fff;border-inline:1px solid #c7cac2;padding-inline:24px}
-.online-player{color:var(--ink)}
-.online-player>span{border-radius:2px}
-.online-stage{border-radius:0;background:#11151b}
-.match-actions{color:var(--ink)}
-.waiting-state,.match-result{color:#f3f5ed}
-.online-notice{border-radius:0;background:#fff;color:var(--ink);border-color:#c5c8c0}
 .modal-backdrop{background:#090b0ed9;backdrop-filter:blur(2px)}
 .modal{border-radius:0;background:#f4f4ef;color:var(--ink);border:0;border-top:8px solid var(--acid);box-shadow:18px 18px 0 #171a20}
 .modal h2{color:var(--ink)}
@@ -218,9 +203,6 @@ footer{max-width:none;min-height:116px;padding:30px clamp(24px,4.6vw,80px);backg
 .profile-hero{align-items:center}
 .profile-hero h2{font-size:25px}
 .profile-hero:after{font-size:30px}
-.online-grid{display:flex;flex-direction:column}
-.room-card{min-height:350px}
-.versus{padding-inline:8px}
 .onboarding{display:block}
 .profile-form{padding:38px 24px}
 .onboarding-logo{width:170px}
@@ -238,7 +220,6 @@ footer{max-width:none;min-height:116px;padding:30px clamp(24px,4.6vw,80px);backg
 .profile-hero{align-items:flex-start}
 .profile-avatar{width:90px;height:90px}
 .page-head .page-title{font-size:34px}
-.match-actions>div{display:grid}
 .dash-grid{gap:1px}
 }
 @media(min-width:1700px){.view{padding-inline:90px}

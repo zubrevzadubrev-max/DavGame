@@ -1,6 +1,6 @@
-import {record} from './storage.js?v=6';
-import {toast,formatTime,modal} from './ui.js?v=6';
-import {createChessState,chessLegalMoves,chessAllMoves,applyChessMove} from './rules.js?v=6';
+import {record} from './storage.js?v=7';
+import {toast,formatTime,modal} from './ui.js?v=7';
+import {createChessState,chessLegalMoves,chessAllMoves,applyChessMove} from './rules.js?v=7';
 
 const glyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
 const value={p:1,n:3,b:3,r:5,q:9,k:100};
